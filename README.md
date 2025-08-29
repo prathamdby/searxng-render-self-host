@@ -1,36 +1,90 @@
-# SearXNG on Render (Free Tier) – Headless Search API
+# SearXNG on Render
 
-This repo configures SearXNG to run on Render's free tier as a lightweight, headless web search API.
+A lightweight, headless SearXNG search API optimized for cloud deployment. Provides privacy-respecting metasearch with JSON, CSV, RSS, and HTML output formats.
 
-## What you get
+## Features
 
-- Disabled rate limiting (`server.limiter: false`)
-- All formats enabled: `json`, `csv`, `rss`, `html`
-- Lean uWSGI: 1 worker, 2 threads
-- Binds to `$PORT` automatically
+- ⚡ **API-First**: Designed for programmatic use with disabled rate limiting
+- 📊 **Multiple Formats**: JSON, CSV, RSS, and HTML responses
+- 🔧 **Resource Optimized**: Lightweight configuration with 1 worker, 2 threads
+- 🚀 **Auto-Deployment**: One-click Render deployment with blueprint
 
-## Deploy on Render
+## Quick Deploy
 
-- Use the included `render.yaml` (Blueprint) or create a Web Service from this repo (environment: Docker).
-- Env vars (pre-set in Blueprint):
-  - `SEARXNG_SECRET`: generated at deploy (set your own for consistency).
-  - `UWSGI_WORKERS`: `1`
-  - `UWSGI_THREADS`: `2`
-- Optional: set `SEARXNG_BASE_URL` to your public Render URL after first deploy.
+### Option 1: Render Blueprint (Recommended)
 
-## API usage
+1. Fork this repository
+2. Go to [Render Dashboard](https://dashboard.render.com)
+3. Click **"New"** → **"Blueprint"**
+4. Connect your GitHub account and select this repository
+5. Click **"Apply Blueprint"** - deployment starts automatically
 
-- JSON: `GET https://<service>.onrender.com/search?q=openai&format=json`
-- CSV: `GET https://<service>.onrender.com/search?q=openai&format=csv`
-- RSS: `GET https://<service>.onrender.com/search?q=openai&format=rss`
-- HTML: `GET https://<service>.onrender.com/search?q=openai&format=html`
+### Option 2: Manual Web Service
 
-## Files
+1. Fork this repository
+2. Go to [Render Dashboard](https://dashboard.render.com)
+3. Click **"New"** → **"Web Service"**
+4. Connect your GitHub account and select this repository
+5. Configure:
+   - **Environment**: `Docker`
+   - **Auto-Deploy**: Enable
+6. Set environment variables:
+   ```
+   SEARXNG_SECRET=your-secret-here
+   UWSGI_WORKERS=1
+   UWSGI_THREADS=2
+   ```
+7. Click **"Create Web Service"**
 
-- `settings.yml` – disables limiter, enables formats, safe defaults.
-- `uwsgi.ini` – tuned for low memory/CPU.
-- `docker-entrypoint.sh` – binds to `$PORT`, launches uWSGI.
-- `Dockerfile` – assembles image from `searxng/searxng`.
-- `render.yaml` – one‑click Render Blueprint.
+## Configuration
 
-Notes: Render free services sleep after ~15 min idle (cold start). Free tier has no persistent disk.
+### Environment Variables
+
+- `SEARXNG_SECRET`: Random secret key (auto-generated in blueprint)
+- `UWSGI_WORKERS`: Number of workers (default: 1)
+- `UWSGI_THREADS`: Threads per worker (default: 2)
+- `SEARXNG_BASE_URL`: Your Render service URL (optional)
+
+### Files
+
+- `settings.yml`: SearXNG configuration with API optimizations
+- `uwsgi.ini`: Lightweight uWSGI configuration
+- `docker-entrypoint.sh`: Entrypoint script for Render
+- `Dockerfile`: Container build configuration
+- `render.yaml`: One-click deployment blueprint
+
+## API Usage
+
+Replace `<your-service>` with your Render service URL:
+
+```bash
+# JSON response (recommended)
+curl "https://<your-service>.onrender.com/search?q=openai&format=json"
+
+# CSV format
+curl "https://<your-service>.onrender.com/search?q=openai&format=csv"
+
+# RSS feed
+curl "https://<your-service>.onrender.com/search?q=openai&format=rss"
+
+# HTML page
+curl "https://<your-service>.onrender.com/search?q=openai&format=html"
+```
+
+### Query Parameters
+
+- `q`: Search query (required)
+- `format`: Output format (`json`, `csv`, `rss`, `html`)
+- `categories`: Search categories (optional)
+- `language`: Language code (optional)
+
+## Important Notes
+
+- ⚠️ **Cold Starts**: Cloud services may sleep after periods of inactivity
+- 💾 **No Persistence**: Ephemeral deployment with no persistent disk storage
+- 🔒 **Rate Limiting**: Disabled by default for API usage
+- 🚀 **Health Check**: Available at `/about` endpoint
+
+## License
+
+MIT - See [LICENSE](LICENSE) file for details.
