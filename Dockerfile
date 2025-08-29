@@ -2,6 +2,7 @@ FROM searxng/searxng:latest
 
 # Copy SearXNG configuration
 COPY settings.yml /etc/searxng/settings.yml
+COPY limiter.toml /etc/searxng/limiter.toml
 COPY uwsgi.ini /etc/uwsgi.ini
 
 # Point SearXNG to the settings file
