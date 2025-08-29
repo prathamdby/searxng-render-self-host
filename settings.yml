@@ -1,0 +1,36 @@
+use_default_settings: true
+
+server:
+  # Disable rate limiting as requested for headless API use
+  limiter: false
+  # Bind on all interfaces; Render sets $PORT, we let the image honor it
+  bind_address: 0.0.0.0
+  # Secret key should be provided via env: SEARXNG_SECRET
+  secret_key: "!env SEARXNG_SECRET"
+  image_proxy: false
+
+ui:
+  static_use_hash: true
+
+search:
+  # Support all output formats for API use
+  formats:
+    - html
+    - json
+    - csv
+    - rss
+  # Conservative defaults for free tier
+  safe_search: 0
+  autocomplete: ""
+
+outgoing:
+  # Keep low concurrency to fit free tier limits
+  pool_connections: 10
+  pool_maxsize: 10
+  enable_http2: true
+
+general:
+  debug: false
+  instance_name: "SearXNG on Render"
+
+redis: {}
